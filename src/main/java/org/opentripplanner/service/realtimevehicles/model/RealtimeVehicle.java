@@ -24,6 +24,12 @@ public class RealtimeVehicle {
    * Speed in meters per second
    */
   private final Double speed;
+
+  /**
+   * odometer in meters
+   */
+  private final Double odometer;
+
   /**
    * Bearing, in degrees, clockwise from North, i.e., 0 is North and 90 is East. This can be the
    * compass bearing, or the direction towards the next stop or intermediate location.
@@ -56,6 +62,7 @@ public class RealtimeVehicle {
     this.label = builder.label();
     this.coordinates = builder.coordinates();
     this.speed = builder.speed();
+    this.odometer = builder.odometer();
     this.heading = builder.heading();
     this.time = builder.time();
     this.stop = stopRelationship;
@@ -77,6 +84,10 @@ public class RealtimeVehicle {
 
   public Optional<Double> speed() {
     return Optional.ofNullable(speed);
+  }
+
+  public Optional<Double> odometer() {
+    return Optional.ofNullable(odometer);
   }
 
   public Optional<Double> heading() {

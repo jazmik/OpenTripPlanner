@@ -220,6 +220,11 @@ public class RealtimeVehiclePatternMatcher {
       if (position.hasSpeed()) {
         newVehicle.withSpeed(position.getSpeed());
       }
+
+      if (position.hasOdometer()) {
+        newVehicle.withOdometer(position.getOdometer());
+      }
+
       if (position.hasBearing()) {
         newVehicle.withHeading(position.getBearing());
       }

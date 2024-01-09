@@ -14,6 +14,7 @@ public class RealtimeVehicleBuilder {
   private String label;
   private WgsCoordinate coordinates;
   private Double speed = null;
+  private Double odometer = null;
   private Double heading = null;
   private Instant time;
   private StopStatus stopStatus = StopStatus.IN_TRANSIT_TO;
@@ -54,6 +55,15 @@ public class RealtimeVehicleBuilder {
 
   public RealtimeVehicleBuilder withSpeed(double speed) {
     this.speed = speed;
+    return this;
+  }
+
+  public Double odometer() {
+    return odometer;
+  }
+
+  public RealtimeVehicleBuilder withOdometer(double odometer) {
+    this.odometer = odometer;
     return this;
   }
 
