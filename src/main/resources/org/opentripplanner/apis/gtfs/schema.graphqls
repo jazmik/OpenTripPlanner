@@ -4098,6 +4098,12 @@ type Trip implements Node {
     trip.
     """
     occupancy: TripOccupancy
+
+    """
+    The latest realtime vehiclePosition information for the latest occurrence of this
+    trip.
+    """
+    vehiclePosition: VehiclePosition
 }
 
 """Entities, which are relevant for a trip and can contain alerts"""

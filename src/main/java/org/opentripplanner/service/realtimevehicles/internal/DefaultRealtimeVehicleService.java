@@ -49,6 +49,15 @@ public class DefaultRealtimeVehicleService
     return vehicles.getOrDefault(pattern, List.of());
   }
 
+  @Override
+  public RealtimeVehicle getRealtimeVehicle(@Nonnull Trip trip) {
+    return vehicles
+      .getOrDefault(transitService.getPatternForTrip(trip), List.of())
+      .stream()
+      .filter(vehicle -> trip.getId().equals(vehicle.trip().getId()))
+      .max(Comparator.comparing(vehicle -> vehicle.time().orElse(Instant.MIN))).orElse(null);
+  }
+
   @Nonnull
   @Override
   public OccupancyStatus getVehicleOccupancyStatus(@Nonnull Trip trip) {

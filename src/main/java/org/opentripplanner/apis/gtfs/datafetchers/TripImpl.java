@@ -30,6 +30,7 @@ import org.opentripplanner.routing.alertpatch.EntitySelector;
 import org.opentripplanner.routing.alertpatch.TransitAlert;
 import org.opentripplanner.routing.services.TransitAlertService;
 import org.opentripplanner.service.realtimevehicles.RealtimeVehicleService;
+import org.opentripplanner.service.realtimevehicles.model.RealtimeVehicle;
 import org.opentripplanner.transit.model.framework.FeedScopedId;
 import org.opentripplanner.transit.model.network.Route;
 import org.opentripplanner.transit.model.network.TripPattern;
@@ -363,6 +364,15 @@ public class TripImpl implements GraphQLDataFetchers.GraphQLTrip {
   @Override
   public DataFetcher<String> tripShortName() {
     return environment -> getSource(environment).getShortName();
+  }
+
+  @Override
+  public DataFetcher<RealtimeVehicle> vehiclePosition() {
+    return environment -> {
+      Trip trip = getSource(environment);
+      return
+        getRealtimeVehiclesService(environment).getRealtimeVehicle(trip);
+        };
   }
 
   @Override

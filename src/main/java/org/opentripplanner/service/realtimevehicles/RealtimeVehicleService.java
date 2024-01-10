@@ -15,8 +15,12 @@ public interface RealtimeVehicleService {
   List<RealtimeVehicle> getRealtimeVehicles(@Nonnull TripPattern pattern);
 
   /**
-   * Get the latest occupancy status for a certain trip. Service contains all the vehicles that
-   * exist in input feeds but doesn't store any historical data.
+   * Get the current RealtimeVehicle for a certain trip.
+   */
+  RealtimeVehicle getRealtimeVehicle(@Nonnull Trip trip);
+
+  /**
+   * Get the latest occupancy status for a certain trip.
    */
   OccupancyStatus getVehicleOccupancyStatus(@Nonnull Trip trip);
 }
