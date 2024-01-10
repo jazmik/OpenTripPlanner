@@ -782,6 +782,7 @@ public class GraphQLDataFetchers {
     public DataFetcher<Long> lastUpdated();
     public DataFetcher<Double> lat();
     public DataFetcher<Double> lon();
+    public DataFetcher<Double> odometer();
     public DataFetcher<Double> speed();
     public DataFetcher<StopRelationship> stopRelationship();
     public DataFetcher<Trip> trip();

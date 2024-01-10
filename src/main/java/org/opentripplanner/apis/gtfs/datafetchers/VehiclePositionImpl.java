@@ -37,6 +37,11 @@ public class VehiclePositionImpl implements GraphQLDataFetchers.GraphQLVehiclePo
   }
 
   @Override
+  public DataFetcher<Double> odometer()  {
+    return env -> getSource(env).odometer().orElse(null);
+  }
+
+  @Override
   public DataFetcher<Double> speed() {
     return env -> getSource(env).speed().orElse(null);
   }

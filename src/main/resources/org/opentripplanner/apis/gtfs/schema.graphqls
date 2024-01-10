@@ -2024,6 +2024,11 @@ type VehiclePosition {
     compass bearing, or the direction towards the next stop or intermediate location.
     """
     heading: Float
+    """
+    Odometer value, in meters. if provided this should align to the distance traveled along the
+    current trip pattern.
+    """
+    odometer: Float
     """When the position of the vehicle was recorded in seconds since the UNIX epoch."""
     lastUpdated: Long
     """Which trip this vehicles runs on."""
