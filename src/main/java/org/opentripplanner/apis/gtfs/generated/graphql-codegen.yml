@@ -66,6 +66,7 @@ config:
     TransitMode: org.opentripplanner.apis.gtfs.generated.GraphQLTypes.GraphQLTransitMode#GraphQLTransitMode
     PageInfo: Object
     Pattern: org.opentripplanner.transit.model.network.TripPattern#TripPattern
+    PatternStopGeometry: org.opentripplanner.apis.gtfs.model.PatternStopGeometry#PatternStopGeometry
     PickupDropoffType: String
     Place: org.opentripplanner.model.plan.StopArrival#StopArrival
     placeAtDistance: org.opentripplanner.routing.graphfinder.PlaceAtDistance#PlaceAtDistance

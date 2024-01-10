@@ -50,6 +50,7 @@ import org.opentripplanner.apis.gtfs.datafetchers.MoneyImpl;
 import org.opentripplanner.apis.gtfs.datafetchers.NodeTypeResolver;
 import org.opentripplanner.apis.gtfs.datafetchers.OpeningHoursImpl;
 import org.opentripplanner.apis.gtfs.datafetchers.PatternImpl;
+import org.opentripplanner.apis.gtfs.datafetchers.PatternHopGeometry;
 import org.opentripplanner.apis.gtfs.datafetchers.PlaceImpl;
 import org.opentripplanner.apis.gtfs.datafetchers.PlaceInterfaceTypeResolver;
 import org.opentripplanner.apis.gtfs.datafetchers.PlanImpl;
@@ -137,6 +138,7 @@ class GtfsGraphQLIndex {
         .type(typeWiring.build(ItineraryImpl.class))
         .type(typeWiring.build(LegImpl.class))
         .type(typeWiring.build(PatternImpl.class))
+        .type(typeWiring.build(PatternHopGeometry.class))
         .type(typeWiring.build(PlaceImpl.class))
         .type(typeWiring.build(placeAtDistanceImpl.class))
         .type(typeWiring.build(PlanImpl.class))

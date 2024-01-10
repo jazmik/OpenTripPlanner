@@ -164,11 +164,21 @@ public final class TripPattern
       return null;
     }
 
+    return GeometryUtils.concatenateLineStrings(requireNonNull(this.getGeometryPerHop()));
+  }
+
+  public List<LineString>  getGeometryPerHop() {
+    if (hopGeometries == null || hopGeometries.length == 0) {
+      return null;
+    }
+
     List<LineString> lineStrings = new ArrayList<>();
     for (int i = 0; i < hopGeometries.length; i++) {
       lineStrings.add(getHopGeometry(i));
     }
-    return GeometryUtils.concatenateLineStrings(lineStrings);
+
+    return lineStrings;
+
   }
 
   public int numberOfStops() {

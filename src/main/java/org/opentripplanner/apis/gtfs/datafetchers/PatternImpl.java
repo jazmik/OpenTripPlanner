@@ -17,6 +17,8 @@ import org.opentripplanner.api.support.SemanticHash;
 import org.opentripplanner.apis.gtfs.GraphQLRequestContext;
 import org.opentripplanner.apis.gtfs.generated.GraphQLDataFetchers;
 import org.opentripplanner.apis.gtfs.generated.GraphQLTypes;
+import org.opentripplanner.apis.gtfs.model.PatternHopGeometryModel;
+import org.opentripplanner.framework.geometry.SphericalDistanceLibrary;
 import org.opentripplanner.framework.graphql.GraphQLUtils;
 import org.opentripplanner.framework.time.ServiceDateUtils;
 import org.opentripplanner.routing.alertpatch.EntitySelector;
@@ -154,6 +156,24 @@ public class PatternImpl implements GraphQLDataFetchers.GraphQLPattern {
       }
     };
   }
+
+
+  @Override
+  public DataFetcher<Iterable<Object>> geometryPerHop() {
+    return environment -> {
+      List<LineString> hopGeometry = getSource(environment).getGeometryPerHop();
+
+      if (hopGeometry == null) {
+        return null;
+      }
+
+      return hopGeometry.stream().map(geometry -> new PatternHopGeometryModel(
+        SphericalDistanceLibrary.length(geometry),
+        geometry.getCoordinates()
+      )).collect(Collectors.toList());
+    };
+  }
+
 
   @Override
   public DataFetcher<String> headsign() {
