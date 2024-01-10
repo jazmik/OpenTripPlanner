@@ -2059,6 +2059,15 @@ enum VehicleStopStatus {
 }
 
 """
+Pattern stop Geometry provides the pattern geometry broken down by stop
+"""
+type PatternHopGeometry {
+    geometry: [Coordinates!]
+    distance: Float!
+}
+
+
+"""
 Pattern is sequence of stops used by trips on a specific direction and variant
 of a route. Most routes have only two patterns: one for outbound trips and one
 for inbound trips
@@ -2101,7 +2110,12 @@ type Pattern implements Node {
 
     """List of stops served by this pattern"""
     stops: [Stop!]
+
+    """combined geometry of this pattern"""
     geometry: [Coordinates]
+
+   """combined geometry of this pattern"""
+    geometryPerHop: [PatternHopGeometry]
 
     """
     Coordinates of the route of this pattern in Google polyline encoded format

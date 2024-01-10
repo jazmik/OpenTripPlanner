@@ -31,6 +31,7 @@ import org.opentripplanner.model.plan.Leg;
 import org.opentripplanner.apis.gtfs.generated.GraphQLTypes.GraphQLOccupancyStatus;
 import org.opentripplanner.apis.gtfs.generated.GraphQLTypes.GraphQLTransitMode;
 import org.opentripplanner.transit.model.network.TripPattern;
+import org.opentripplanner.apis.gtfs.model.PatternStopGeometry;
 import org.opentripplanner.model.plan.StopArrival;
 import org.opentripplanner.routing.graphfinder.PlaceAtDistance;
 import graphql.relay.Connection;
@@ -391,6 +392,7 @@ public class GraphQLDataFetchers {
     public DataFetcher<String> code();
     public DataFetcher<Integer> directionId();
     public DataFetcher<Iterable<Coordinate>> geometry();
+    public DataFetcher<Iterable<Object>> geometryPerHop();
     public DataFetcher<String> headsign();
     public DataFetcher<graphql.relay.Relay.ResolvedGlobalId> id();
     public DataFetcher<String> name();
@@ -402,6 +404,12 @@ public class GraphQLDataFetchers {
     public DataFetcher<Iterable<Trip>> trips();
     public DataFetcher<Iterable<Trip>> tripsForDate();
     public DataFetcher<Iterable<RealtimeVehicle>> vehiclePositions();
+  }
+  
+  /** Pattern stop Geometry provides the pattern geometry broken down by stop */
+  public interface GraphQLPatternHopGeometry {
+    public DataFetcher<Double> distance();
+    public DataFetcher<Iterable<Coordinate>> geometry();
   }
   
   public interface GraphQLPlace {

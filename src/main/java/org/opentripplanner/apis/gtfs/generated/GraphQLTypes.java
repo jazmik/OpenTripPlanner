@@ -583,6 +583,7 @@ public class GraphQLTypes {
     
   }
   
+  
   public enum GraphQLPickupDropoffType {
     CALL_AGENCY,
     COORDINATE_WITH_DRIVER,
