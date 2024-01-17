@@ -31,7 +31,6 @@ import org.opentripplanner.model.plan.Leg;
 import org.opentripplanner.apis.gtfs.generated.GraphQLTypes.GraphQLOccupancyStatus;
 import org.opentripplanner.apis.gtfs.generated.GraphQLTypes.GraphQLTransitMode;
 import org.opentripplanner.transit.model.network.TripPattern;
-import org.opentripplanner.apis.gtfs.model.PatternStopGeometry;
 import org.opentripplanner.model.plan.StopArrival;
 import org.opentripplanner.routing.graphfinder.PlaceAtDistance;
 import graphql.relay.Connection;
@@ -406,7 +405,7 @@ public class GraphQLDataFetchers {
     public DataFetcher<Iterable<RealtimeVehicle>> vehiclePositions();
   }
   
-  /** Pattern stop Geometry provides the pattern geometry broken down by stop */
+  /** Pattern Hop Geometry provides the pattern geometry broken down by stop */
   public interface GraphQLPatternHopGeometry {
     public DataFetcher<Double> distance();
     public DataFetcher<Iterable<Coordinate>> geometry();
@@ -795,6 +794,22 @@ public class GraphQLDataFetchers {
     public DataFetcher<StopRelationship> stopRelationship();
     public DataFetcher<Trip> trip();
     public DataFetcher<String> vehicleId();
+    public DataFetcher<Object> vehiclePositionGeometry();
+  }
+  
+  /**
+   * Vehicle Position Geometry splits the trip pattern geometry in two based in the vehicle position
+   * odometer, the is useful to show the progress of a trip along a map with different styling
+   * for the portion of the path already passed.
+   *
+   * if no odometer is available then future will be the full path and past will be an empty array.
+   * if the odometer reading places the vehicle past the end of the pattern geometry then past will be
+   * the complete trip pattern and future will be empty.
+   * if not pattern is available then VehiclePositionGeometry will be null
+   */
+  public interface GraphQLVehiclePositionGeometry {
+    public DataFetcher<Iterable<Coordinate>> future();
+    public DataFetcher<Iterable<Coordinate>> past();
   }
   
   /** Vehicle rental station represents a location where users can rent bicycles etc. for a fee. */

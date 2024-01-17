@@ -192,6 +192,8 @@ public class GeometryUtils {
     return new SplitLineString(beginning, ending);
   }
 
+
+
   /**
    * Returns the chunk of the given geometry between the two given coordinates.
    * <p>

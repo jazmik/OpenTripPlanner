@@ -75,6 +75,126 @@ public abstract class SphericalDistanceLibrary {
     return accumulatedMeters;
   }
 
+
+
+  /**
+   * Compute the Intermediate Point between two coordinates in (longitude, latitude degrees)
+   *
+   * @param from The Coordinate of the "from" point
+   * @param to The Coordinate of the "to" point
+   * @param distance The distance in meters of the requried point along the line between from and to
+   * @return The intermediate point.
+   */
+  public static Coordinate calculateIntermediatePoint(Coordinate from, Coordinate to, double distance) {
+    // If the distance is negative, return the 'to' coordinate
+    if (distance < 0) {
+      return from;
+    }
+
+    // Calculate the angular distance
+    double angularDistance = distance / RADIUS_OF_EARTH_IN_M;
+
+    // Calculate the intermediate point using the Haversine formula
+    double lat1 = Math.toRadians(from.x);
+    double lon1 = Math.toRadians(from.y);
+
+    double initialBearing = calculateBearing(from, to);
+
+
+
+    double latIntermediate = Math.asin(Math.sin(lat1) * Math.cos(angularDistance) +
+      Math.cos(lat1) * Math.sin(angularDistance) * Math.cos(initialBearing));
+    double lonIntermediate = lon1 + Math.atan2(Math.sin(initialBearing) * Math.sin(angularDistance) * Math.cos(lat1),
+      Math.cos(angularDistance) - Math.sin(lat1) * Math.sin(latIntermediate));
+
+    // Convert back to degrees
+    latIntermediate = Math.toDegrees(latIntermediate);
+    lonIntermediate = Math.toDegrees(lonIntermediate);
+
+
+    return new Coordinate(latIntermediate, lonIntermediate);
+  }
+
+  /**
+   * Compute the bearing between two coordinates in (longitude, latitude degrees)
+   *
+   * @param from The Coordinate of the "from" point
+   * @param to The Coordinate of the "to" point
+   * @return The bearing.
+   */
+  public static double calculateBearing(Coordinate from, Coordinate to) {
+    double lat1 = Math.toRadians(from.x);
+    double lon1 = Math.toRadians(from.y);
+    double lat2 = Math.toRadians(to.x);
+    double lon2 = Math.toRadians(to.y);
+
+    double deltaLon = lon2 - lon1;
+
+    double y = Math.sin(deltaLon) * Math.cos(lat2);
+    double x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(deltaLon);
+
+    return Math.atan2(y, x);
+  }
+
+  /**
+   * split line string at specified distance. The last coordinate of the first linestring
+   * will be the same as the first coordinate of the last linestring
+   *
+   * @param lineString The polyline in (longitude, latitude degrees).
+   * @param distance The distance in meters to split the lineString
+   * @return SplitLineString containing the original linestring split in two.
+   */
+  public static SplitLineString splitLineStringAtDistance(LineString lineString, double distance) {
+
+    LineString empty = GeometryUtils.getGeometryFactory().createLineString();
+
+    if (lineString.getNumPoints() < 2) {
+      return new SplitLineString(empty, empty);
+    }
+
+    if (distance <= 0) {
+      return new SplitLineString(empty, lineString);
+    }
+
+    double totalDistance = SphericalDistanceLibrary.length(lineString);
+
+    if (distance >= totalDistance) {
+      return new SplitLineString(lineString, empty);
+    }
+
+    double accumulatedDist = 0;
+    int splitIndex = 0;
+    Coordinate[] inCoords = lineString.getCoordinates();
+    Coordinate pointAtDist = new Coordinate();
+
+    for (int i = 1; i < inCoords.length; i++) {
+      double segDist = distance(inCoords[i - 1], inCoords[i]);
+      if (accumulatedDist + segDist > distance) {
+        splitIndex = i;
+        pointAtDist = calculateIntermediatePoint(inCoords[i - 1], inCoords[i], distance - accumulatedDist);
+        break;
+      }
+      accumulatedDist += segDist;
+    }
+
+    if (splitIndex == 0) {
+      return new SplitLineString(empty, lineString);
+    }
+
+   Coordinate[] begin = new Coordinate[splitIndex + 1];
+   Coordinate[] end = new Coordinate[(inCoords.length - splitIndex) + 1];
+   System.arraycopy(inCoords, 0, begin, 0, begin.length-1 );
+   System.arraycopy(inCoords, splitIndex, end, 1, end.length-1 );
+   end[0] = pointAtDist;
+   begin[begin.length - 1] = pointAtDist;
+
+   return new SplitLineString(
+     GeometryUtils.getGeometryFactory().createLineString(begin),
+     GeometryUtils.getGeometryFactory().createLineString( end)
+    );
+  }
+
+
   /**
    * Compute the (approximated) length of a polyline
    *

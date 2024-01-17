@@ -2015,6 +2015,8 @@ type VehiclePosition {
     lat: Float
     """Longitude of the vehicle"""
     lon: Float
+    """ the trip geometry split by the vehiclePosition odometer"""
+    vehiclePositionGeometry: VehiclePositionGeometry
     """The current stop where the vehicle will be or is currently arriving."""
     stopRelationship: StopRelationship
     """Speed of the vehicle in meters/second"""
@@ -2059,12 +2061,32 @@ enum VehicleStopStatus {
 }
 
 """
-Pattern stop Geometry provides the pattern geometry broken down by stop
+Pattern Hop Geometry provides the pattern geometry broken down by stop
 """
 type PatternHopGeometry {
-    geometry: [Coordinates!]
-    distance: Float!
+
+  """ geometry for this hop segment, a hop segment is the path between two stops"""
+  geometry: [Coordinates!]
+
+  """ the distance in meters of the hop segment """
+  distance: Float!
 }
+
+"""
+Vehicle Position Geometry splits the trip pattern geometry in two based in the vehicle position
+odometer, the is useful to show the progress of a trip along a map with different styling
+for the portion of the path already passed.
+
+if no odometer is available then future will be the full path and past will be an empty array.
+if the odometer reading places the vehicle past the end of the pattern geometry then past will be
+the complete trip pattern and future will be empty.
+if not pattern is available then VehiclePositionGeometry will be null
+"""
+type VehiclePositionGeometry {
+    past: [Coordinates!]
+    future: [Coordinates!]
+}
+
 
 
 """

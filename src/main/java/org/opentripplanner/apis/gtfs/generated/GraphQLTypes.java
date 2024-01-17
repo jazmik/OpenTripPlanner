@@ -1944,6 +1944,7 @@ public class GraphQLTypes {
   
   
   
+  
   /** How close the vehicle is to the stop. */
   public enum GraphQLVehicleStopStatus {
     INCOMING_AT,
