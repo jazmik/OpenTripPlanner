@@ -255,16 +255,12 @@ public class RealtimeVehiclePatternMatcher {
           .toList();
         if (matchedStops.size() == 1) {
           newVehicle.withStop(matchedStops.get(0));
-        } else {
-          LOG.warn(
-            "Stop ID {} is not in trip {}. Not setting stopRelationship.",
-            vehiclePosition.getStopId(),
-            trip.getId()
-          );
         }
       }
-      // but if stop_id isn't there we try current_stop_sequence
-      else if (vehiclePosition.hasCurrentStopSequence()) {
+
+      // but if stop_id can't be matched due to it being missing
+      // or there's more than one stop_id match we try current_stop_sequence
+      if (vehiclePosition.hasCurrentStopSequence() && newVehicle.stop() == null) {
         stopIndexOfGtfsSequence
           .apply(vehiclePosition.getCurrentStopSequence())
           .ifPresent(stopIndex -> {
@@ -273,6 +269,18 @@ public class RealtimeVehiclePatternMatcher {
               newVehicle.withStop(stop);
             }
           });
+      }
+
+      if (
+        (vehiclePosition.hasCurrentStopSequence() || vehiclePosition.hasStopId()) &&
+        newVehicle.stop() == null
+      ) {
+        LOG.warn(
+          "Failed to match Stop ID {}, Seq: {} to trip {}. Not setting stopRelationship.",
+          vehiclePosition.getStopId(),
+          vehiclePosition.getCurrentStopSequence(),
+          trip.getId()
+        );
       }
     }
 

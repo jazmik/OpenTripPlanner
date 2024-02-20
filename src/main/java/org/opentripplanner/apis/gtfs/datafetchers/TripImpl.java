@@ -370,9 +370,8 @@ public class TripImpl implements GraphQLDataFetchers.GraphQLTrip {
   public DataFetcher<RealtimeVehicle> vehiclePosition() {
     return environment -> {
       Trip trip = getSource(environment);
-      return
-        getRealtimeVehiclesService(environment).getRealtimeVehicle(trip);
-        };
+      return getRealtimeVehiclesService(environment).getRealtimeVehicle(trip);
+    };
   }
 
   @Override

@@ -2,6 +2,7 @@ package org.opentripplanner.service.realtimevehicles;
 
 import java.util.List;
 import javax.annotation.Nonnull;
+import org.locationtech.jts.geom.Envelope;
 import org.opentripplanner.service.realtimevehicles.model.RealtimeVehicle;
 import org.opentripplanner.transit.model.network.TripPattern;
 import org.opentripplanner.transit.model.timetable.OccupancyStatus;
@@ -13,6 +14,11 @@ public interface RealtimeVehicleService {
    * exist in input feeds but doesn't store any historical data.
    */
   List<RealtimeVehicle> getRealtimeVehicles(@Nonnull TripPattern pattern);
+
+  /**
+   * Get the realtime vehicles within the provided Geo Envelope.
+   */
+  List<RealtimeVehicle> findRealtimeVehiclesInEnvelope(@Nonnull Envelope envelope);
 
   /**
    * Get the current RealtimeVehicle for a certain trip.

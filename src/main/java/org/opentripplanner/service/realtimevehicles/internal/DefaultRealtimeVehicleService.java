@@ -8,9 +8,9 @@ import java.time.Instant;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import javax.annotation.Nonnull;
+import org.locationtech.jts.geom.Envelope;
 import org.opentripplanner.service.realtimevehicles.RealtimeVehicleRepository;
 import org.opentripplanner.service.realtimevehicles.RealtimeVehicleService;
 import org.opentripplanner.service.realtimevehicles.model.RealtimeVehicle;
@@ -50,12 +50,30 @@ public class DefaultRealtimeVehicleService
   }
 
   @Override
+  public List<RealtimeVehicle> findRealtimeVehiclesInEnvelope(@Nonnull Envelope envelope) {
+    // the list is made immutable during insertion, so we can safely return them
+    return vehicles
+      .values()
+      .stream()
+      .flatMap(patternlist ->
+        patternlist
+          .stream()
+          .filter(vehicle -> vehicle.coordinates().isPresent())
+          .filter(vehicle ->
+            envelope.contains(vehicle.coordinates().orElseThrow().asJtsCoordinate())
+          )
+      )
+      .toList();
+  }
+
+  @Override
   public RealtimeVehicle getRealtimeVehicle(@Nonnull Trip trip) {
     return vehicles
       .getOrDefault(transitService.getPatternForTrip(trip), List.of())
       .stream()
       .filter(vehicle -> trip.getId().equals(vehicle.trip().getId()))
-      .max(Comparator.comparing(vehicle -> vehicle.time().orElse(Instant.MIN))).orElse(null);
+      .max(Comparator.comparing(vehicle -> vehicle.time().orElse(Instant.MIN)))
+      .orElse(null);
   }
 
   @Nonnull

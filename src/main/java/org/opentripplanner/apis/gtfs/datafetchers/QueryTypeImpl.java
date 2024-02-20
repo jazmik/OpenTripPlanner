@@ -54,6 +54,7 @@ import org.opentripplanner.routing.graphfinder.PlaceAtDistance;
 import org.opentripplanner.routing.graphfinder.PlaceType;
 import org.opentripplanner.routing.vehicle_parking.VehicleParking;
 import org.opentripplanner.routing.vehicle_parking.VehicleParkingService;
+import org.opentripplanner.service.realtimevehicles.model.RealtimeVehicle;
 import org.opentripplanner.service.vehiclerental.VehicleRentalService;
 import org.opentripplanner.service.vehiclerental.model.VehicleRentalPlace;
 import org.opentripplanner.service.vehiclerental.model.VehicleRentalStation;
@@ -892,6 +893,34 @@ public class QueryTypeImpl implements GraphQLDataFetchers.GraphQLQueryType {
       }
 
       return vehicleRentalStationService.getVehicleRentalStations();
+    };
+  }
+
+  @Override
+  public DataFetcher<Iterable<RealtimeVehicle>> vehiclesByBbox() {
+    return environment -> {
+      var args = new GraphQLTypes.GraphQLQueryTypeStopsByBboxArgs(environment.getArguments());
+
+      Envelope envelope = new Envelope(
+        new Coordinate(args.getGraphQLMinLon(), args.getGraphQLMinLat()),
+        new Coordinate(args.getGraphQLMaxLon(), args.getGraphQLMaxLat())
+      );
+
+      Stream<RealtimeVehicle> rtvStream = environment
+        .<GraphQLRequestContext>getContext()
+        .realTimeVehicleService()
+        .findRealtimeVehiclesInEnvelope(envelope)
+        .stream();
+
+      if (args.getGraphQLFeeds() != null) {
+        List<String> feedIds = args.getGraphQLFeeds();
+        rtvStream =
+          rtvStream.filter(vehicle ->
+            feedIds.contains(vehicle.vehicleId().orElseThrow().getFeedId())
+          );
+      }
+
+      return rtvStream.collect(Collectors.toList());
     };
   }
 

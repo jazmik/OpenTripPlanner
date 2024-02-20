@@ -2789,6 +2789,25 @@ type QueryType {
     """Get the time range for which the API has data available"""
     serviceTimeRange: serviceTimeRange
 
+    """Get all stops within the specified bounding box"""
+    vehiclesByBbox(
+        """Southern bound of the bounding box"""
+        minLat: Float!
+
+        """Western bound of the bounding box"""
+        minLon: Float!
+
+        """Northern bound of the bounding box"""
+        maxLat: Float!
+
+        """Eastern bound of the bounding box"""
+        maxLon: Float!
+
+        """List of feed ids from which vehicles are returned"""
+        feeds: [String!]
+    ): [VehiclePosition]
+
+
     """Get all bike rental stations"""
     bikeRentalStations(
         """
